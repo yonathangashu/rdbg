@@ -1,9 +1,11 @@
+use env_logger::Env;
 use nix::sys::{ptrace, wait::waitpid};
 use nix::unistd::Pid;
 use std::process::Command;
 
 fn main() -> color_eyre::Result<()> {
     color_eyre::install()?;
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
     let mut child = Command::new("./tests/bin/sleep")
         .spawn()
@@ -21,7 +23,7 @@ fn main() -> color_eyre::Result<()> {
     println!("{data:#?}");
 
     ptrace::kill(pid)?;
-    log::info!("Killed the process successfully.")
+    log::info!("Killed the process successfully.");
 
     Ok(())
 }
